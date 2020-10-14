@@ -21,17 +21,17 @@ jobs:
 #          path: ${{ env.R_LIBS_USER }}
 #          key: ${{ runner.os }}-r-4.0.0-${{ hashFiles('depends.Rds') }}
 #          restore-keys: ${{ runner.os }}-r-4.0.0-
-      - name: Cache R packages
+      - name: Install renv
+        run: Rscript -e "install.packages('renv')"
+      - name: Restore packages
+        run: Rscript -e "renv::restore()"
+      - name: Cache packages
         uses: actions/cache@v2
         with:
           path: ~/.local/share/renv
           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
           restore-keys: |
             ${{ runner.os }}-renv-        
-      - name: Install renv
-        run: Rscript -e "install.packages('renv')"
-      - name: Restore packages
-        run: Rscript -e "renv::restore()"
       - name: Test
         run: Rscript ~/work/test_r_gh_actions/test_r_gh_actions/tests/testthat/test-test_r_gh_actions.R
 #      - name: List files
